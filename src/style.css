@@ -1,3 +1,27 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+}
+
+.title {
+  color: yellowgreen;
+  font-weight: 500;
+  text-align: center;
+  padding: 30px;
+}
+
+.stopwatch {
+  margin-bottom: 60px;
+  text-align: center;
+  font-size: 3em;
+  font-weight: bold;
+}
+
 .btn-wrap {
   display: flex;
   justify-content: center;
