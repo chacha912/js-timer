@@ -1,7 +1,7 @@
 /* ==== DOMs ==== */
 document.querySelector('.stopwatch').onclick = () => {
   const isRunning = false;
-  const lapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
+  const elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
   const laps = [];
 
   const formatElapsedTime = (() => {
@@ -11,5 +11,13 @@ document.querySelector('.stopwatch').onclick = () => {
       `${formatTwoDigits(hh)}:${formatTwoDigits(mm)}:${formatTwoDigits(
         ss
       )}:${formatOneDigit(ms)}`;
+  })();
+
+  const renderElapsedTime = (() => {
+    const $display = document.querySelector('.stopwatch > .display');
+
+    return () => {
+      $display.textContent = formatElapsedTime(elapsedTime);
+    };
   })();
 };
