@@ -1,2 +1,2 @@
-# js-timer-
+# js-timer
 github practice
