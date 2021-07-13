@@ -13,7 +13,7 @@ const closest = ($startElem, targetClass, endClass) => {
 document.querySelector('.stopwatch').onclick = (() => {
   let isRunning = false;
   let elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
-  const laps = [];
+  let laps = [];
 
   const [$btnStartOrStop, $btnLap, $btnReset] =
     document.querySelectorAll('.control-btn');
@@ -36,7 +36,7 @@ document.querySelector('.stopwatch').onclick = (() => {
   })();
 
   const renderLaps = (() => {
-    const $laps = document.querySelector('.stopwatch > .timer-laps');
+    const $laps = document.querySelector('.timer-laps');
 
     const createLapElement = (newLap, index) => {
       const $fragment = document.createDocumentFragment();
@@ -104,10 +104,33 @@ document.querySelector('.stopwatch').onclick = (() => {
     };
   })();
 
+  const resetOrLap = (() => {
+    const reset = () => {
+      $btnReset.disabled = true;
+      $btnLap.disabled = true;
+
+      elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
+      renderElapsedTime();
+
+      laps = [];
+      renderLaps();
+    };
+
+    const addLap = () => {
+      laps = [...laps, elapsedTime];
+      renderLaps();
+    };
+
+    return () => {
+      isRunning ? addLap() : reset();
+    };
+  })();
+
   return ({ target }) => {
-    console.log(target);
     const $targetBtn = closest(target, 'control-btn', 'stopwatch');
+    console.log($targetBtn);
     if (!$targetBtn) return;
     if ($targetBtn === $btnStartOrStop) handleBtnStartOrStop();
+    if ($targetBtn === $btnLap || $targetBtn === $btnReset) resetOrLap();
   };
 })();
