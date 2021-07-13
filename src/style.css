@@ -16,9 +16,12 @@ body {
 }
 
 .stopwatch {
-  margin-bottom: 60px;
   text-align: center;
   font-size: 3em;
+}
+
+.display {
+  margin-bottom: 60px;
   font-weight: bold;
 }
 
