@@ -1,8 +1,11 @@
-/* ==== DOMs ==== */
-document.querySelector('.stopwatch').onclick = () => {
+/* eslint-disable no-unused-expressions */
+document.querySelector('.stopwatch').onclick = (() => {
   const isRunning = false;
-  const elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
-  const laps = [];
+  let elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
+  let laps = [];
+
+  const [$startBtn, $lapBtn, $resetBtn] =
+    document.querySelectorAll('.control-btn');
 
   const formatElapsedTime = (() => {
     const formatTwoDigits = n => (n < 10 ? '0' + n : n + '');
@@ -57,4 +60,31 @@ document.querySelector('.stopwatch').onclick = () => {
       }
     };
   })();
-};
+
+  const resetOrLap = (() => {
+    const reset = () => {
+      $resetBtn.disabled = true;
+      $lapBtn.disabled = true;
+
+      elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
+      renderElapsedTime();
+
+      laps = [];
+      renderLaps();
+    };
+
+    const addLap = () => {
+      laps = [...laps, elapsedTime];
+      renderLaps();
+    };
+
+    return () => {
+      isRunning ? addLap() : reset();
+    };
+  })();
+
+  return ({ target }) => {
+    if (!target.classList.contains('control')) return;
+    target === ($lapBtn || $resetBtn) ? () => {} : resetOrLap();
+  };
+})();
