@@ -113,12 +113,14 @@ document.querySelector('.stopwatch').onclick = (() => {
     isRunning = true;
     runTimer();
     toggleControlBtns();
+    $btnLap.disabled = false;
   };
 
   const stopTimer = () => {
     isRunning = false;
     clearInterval(timerId);
     toggleControlBtns();
+    $btnLap.disabled = true;
   };
 
   const resetTimer = () => {

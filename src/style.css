@@ -47,6 +47,11 @@ body {
   opacity: 1;
 }
 
+.control-btn:disabled {
+  opacity: 0.88;
+  cursor: not-allowed;
+}
+
 .control-btn.lap {
   background: #42aaca;
 }
