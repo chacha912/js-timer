@@ -14,6 +14,7 @@ document.querySelector('.stopwatch').onclick = (() => {
   let isRunning = false;
   let elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
   let laps = [];
+  let timerId = null;
 
   const [$btnStartOrStop, $btnLap, $btnReset] =
     document.querySelectorAll('.control-btn');
@@ -38,25 +39,16 @@ document.querySelector('.stopwatch').onclick = (() => {
   const renderLaps = (() => {
     const $laps = document.querySelector('.timer-laps');
 
-    const createLapElement = (newLap, index) => {
-      const $fragment = document.createDocumentFragment();
-      const $index = document.createElement('div');
-      $index.textContent = index;
-      $fragment.appendChild($index);
-
-      const $newLap = document.createElement('div');
+    const createLapElement = newLap => {
+      const $newLap = document.createElement('li');
       $newLap.textContent = formatElapsedTime(newLap);
-      $fragment.appendChild($newLap);
 
-      $laps.appendChild($fragment);
+      $laps.appendChild($newLap);
       $laps.style.display = 'block';
     };
 
     const removeLaps = () => {
-      document
-        .querySelectorAll('.timer-laps > .timer-lap')
-        .forEach($lap => $lap.remove());
-
+      $laps.innerHTML = '';
       $laps.style.display = 'none';
     };
 
@@ -65,100 +57,88 @@ document.querySelector('.stopwatch').onclick = (() => {
 
       if (length) {
         const newLap = laps[length - 1];
-        createLapElement(newLap, length);
+        createLapElement(newLap);
       } else {
         removeLaps();
       }
     };
   })();
 
-  const handleBtnStartOrStop = (() => {
-    let timerId = null;
+  const setLaps = _laps => {
+    laps = _laps;
+    renderLaps();
+  };
 
-    // Start
-    const startTimer = () => {
-      let { hh, mm, ss, ms } = elapsedTime;
+  const setElapsedTime = _elapsedTime => {
+    elapsedTime = _elapsedTime;
+    renderElapsedTime();
+  };
 
-      timerId = setInterval(() => {
-        ms += 1;
-        if (ms >= 10) {
-          ss += 1;
-          ms = 0;
-        }
-        if (ss >= 60) {
-          mm += 1;
-          ss = 0;
-        }
-        if (mm >= 60) {
-          hh += 1;
-          mm = 0;
-        }
+  const toggleControlBtns = (() => {
+    $iconStartOrStop = $btnStartOrStop.querySelector('.fas');
 
-        elapsedTime = { hh, mm, ss, ms };
-        renderElapsedTime();
-      }, 100);
-    };
-
-    // Stop
-    const stopTimer = () => {
-      clearInterval(timerId);
-    };
-
-    const toggleBtnStartOrStop = (() => {
-      $iconStartOrStop = $btnStartOrStop.querySelector('.fas');
-
-      return () => {
-        $btnStartOrStop.classList.toggle('start', !isRunning);
-        $btnStartOrStop.classList.toggle('pause', isRunning);
-        $btnStartOrStop.setAttribute('aria-label', isRunning ? '정지' : '시작');
-        $iconStartOrStop.classList.toggle('fa-play', !isRunning);
-        $iconStartOrStop.classList.toggle('fa-pause', isRunning);
-      };
-    })();
-
-    const start = () => {
-      startTimer();
-      toggleBtnStartOrStop();
-    };
-
-    const stop = () => {
-      stopTimer();
-      toggleBtnStartOrStop();
-    };
-
-    return () => {
-      isRunning = !isRunning;
-      isRunning ? start() : stop();
+    return isStart => {
+      isStart = isStart ?? isRunning;
+      $btnStartOrStop.classList.toggle('start', isStart);
+      $btnStartOrStop.classList.toggle('pause', !isStart);
+      $btnStartOrStop.setAttribute('aria-label', isStart ? '정지' : '시작');
+      $iconStartOrStop.classList.toggle('fa-play', !isStart);
+      $iconStartOrStop.classList.toggle('fa-pause', isStart);
     };
   })();
 
-  const resetOrLap = (() => {
-    const reset = () => {
-      $btnReset.disabled = true;
-      $btnLap.disabled = true;
+  const runTimer = () => {
+    let { hh, mm, ss, ms } = elapsedTime;
 
-      elapsedTime = { hh: 0, mm: 0, ss: 0, ms: 0 };
-      renderElapsedTime();
+    timerId = setInterval(() => {
+      ms += 1;
+      if (ms >= 10) {
+        ss += 1;
+        ms = 0;
+      }
+      if (ss >= 60) {
+        mm += 1;
+        ss = 0;
+      }
+      if (mm >= 60) {
+        hh += 1;
+        mm = 0;
+      }
 
-      laps = [];
-      renderLaps();
-    };
+      setElapsedTime({ hh, mm, ss, ms });
+    }, 100);
+  };
 
-    const addLap = () => {
-      laps = [...laps, elapsedTime];
-      renderLaps();
-    };
+  const startTimer = () => {
+    isRunning = true;
+    runTimer();
+    toggleControlBtns();
+  };
 
-    return () => {
-      isRunning ? addLap() : reset();
-    };
-  })();
+  const stopTimer = () => {
+    isRunning = false;
+    clearInterval(timerId);
+    toggleControlBtns();
+  };
+
+  const resetTimer = () => {
+    stopTimer();
+    setElapsedTime({ hh: 0, mm: 0, ss: 0, ms: 0 });
+    setLaps([]);
+    toggleControlBtns(false);
+  };
+
+  const lapTimer = () => {
+    setLaps([...laps, elapsedTime]);
+  };
 
   return ({ target }) => {
     const $targetBtn = closest(target, 'control-btn', 'stopwatch');
-    console.log($targetBtn);
     if (!$targetBtn) return;
-    if ($targetBtn === $btnStartOrStop) handleBtnStartOrStop();
-    if ($targetBtn === $btnLap || $targetBtn === $btnReset) resetOrLap();
+    if ($targetBtn === $btnLap) lapTimer();
+    if ($targetBtn === $btnReset) resetTimer();
+    if ($targetBtn === $btnStartOrStop) {
+      isRunning ? stopTimer() : startTimer();
+    }
   };
 })();

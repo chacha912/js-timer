@@ -65,6 +65,7 @@ body {
 }
 
 .timer-laps {
+  display:none;
   column-width: 150px;
   overflow-y: auto;
   margin: 20px auto;
