@@ -99,6 +99,11 @@ document.querySelector('.stopwatch').onclick = (() => {
       }, 100);
     };
 
+    // Stop
+    const stopTimer = () => {
+      clearInterval(timerId);
+    };
+
     const toggleBtnStartOrStop = (() => {
       $iconStartOrStop = $btnStartOrStop.querySelector('.fas');
 
@@ -117,6 +122,7 @@ document.querySelector('.stopwatch').onclick = (() => {
     };
 
     const stop = () => {
+      stopTimer();
       toggleBtnStartOrStop();
     };
 
