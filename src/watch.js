@@ -24,7 +24,7 @@ document.querySelector('.stopwatch').onclick = (() => {
     return ({ hh, mm, ss, ms }) =>
       `${formatTwoDigits(hh)}:${formatTwoDigits(mm)}:${formatTwoDigits(
         ss
-      )}:${formatOneDigit(ms)}`;
+      )}.${ms}`;
   })();
 
   const renderElapsedTime = (() => {
@@ -76,7 +76,7 @@ document.querySelector('.stopwatch').onclick = (() => {
     let timerId = null;
 
     // Start
-    const start = () => {
+    const startTimer = () => {
       let { hh, mm, ss, ms } = elapsedTime;
 
       timerId = setInterval(() => {
@@ -95,12 +95,34 @@ document.querySelector('.stopwatch').onclick = (() => {
         }
 
         elapsedTime = { hh, mm, ss, ms };
+        renderElapsedTime();
       }, 100);
     };
 
+    const toggleBtnStartOrStop = (() => {
+      $iconStartOrStop = $btnStartOrStop.querySelector('.fas');
+
+      return () => {
+        $btnStartOrStop.classList.toggle('start', !isRunning);
+        $btnStartOrStop.classList.toggle('pause', isRunning);
+        $btnStartOrStop.setAttribute('aria-label', isRunning ? '정지' : '시작');
+        $iconStartOrStop.classList.toggle('fa-play', !isRunning);
+        $iconStartOrStop.classList.toggle('fa-pause', isRunning);
+      };
+    })();
+
+    const start = () => {
+      startTimer();
+      toggleBtnStartOrStop();
+    };
+
+    const stop = () => {
+      toggleBtnStartOrStop();
+    };
+
     return () => {
-      isRunning ? stop() : start();
       isRunning = !isRunning;
+      isRunning ? start() : stop();
     };
   })();
 
