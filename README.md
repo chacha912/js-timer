@@ -1,8 +1,9 @@
 # ⏱ js-timer 
 
-![타이머 스크린샷](/img/screenshot.jpg)  
+바닐라 자바스크립트로 만든 타이머 앱  
 
-바닐라 자바스크립트로 만든 타이머 앱
+[js-timer 페이지](https://chacha912.github.io/js-timer/)
+![타이머 스크린샷](/img/screenshot.jpg)  
 
 
 ## ✨타이머 소개
