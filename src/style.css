@@ -71,8 +71,9 @@ body {
 
 .timer-laps {
   display:none;
-  column-width: 150px;
-  overflow-y: auto;
+  flex-direction: column;
+  flex-wrap: wrap;
+  overflow-x: auto;
   margin: 20px auto;
   padding: 14px 14px 14px 66px;
   width: 60%;
@@ -81,4 +82,8 @@ body {
   background: #f3f4f5;
   border-radius: 20px;
   font-size: 20px;
+}
+
+.timer-lap {
+  width: 180px;
 }

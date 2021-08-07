@@ -41,10 +41,11 @@ document.querySelector('.stopwatch').onclick = (() => {
 
     const createLapElement = newLap => {
       const $newLap = document.createElement('li');
+      $newLap.classList.add('timer-lap');
       $newLap.textContent = formatElapsedTime(newLap);
 
       $laps.appendChild($newLap);
-      $laps.style.display = 'block';
+      $laps.style.display = 'flex';
     };
 
     const removeLaps = () => {
