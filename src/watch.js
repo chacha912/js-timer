@@ -77,13 +77,14 @@ document.querySelector('.stopwatch').onclick = (() => {
   const toggleControlBtns = (() => {
     $iconStartOrStop = $btnStartOrStop.querySelector('.fas');
 
-    return isStart => {
-      isStart = isStart ?? isRunning;
-      $btnStartOrStop.classList.toggle('start', isStart);
-      $btnStartOrStop.classList.toggle('pause', !isStart);
-      $btnStartOrStop.setAttribute('aria-label', isStart ? '정지' : '시작');
-      $iconStartOrStop.classList.toggle('fa-play', !isStart);
-      $iconStartOrStop.classList.toggle('fa-pause', isStart);
+    // 현재 타이머실행 상태라면, 정지버튼이 보여야 함.
+    return _isRunning => {
+      _isRunning = _isRunning ?? isRunning;
+      $btnStartOrStop.classList.toggle('start', !_isRunning);
+      $btnStartOrStop.classList.toggle('pause', _isRunning);
+      $btnStartOrStop.setAttribute('aria-label', _isRunning ? '정지' : '시작');
+      $iconStartOrStop.classList.toggle('fa-play', !_isRunning);
+      $iconStartOrStop.classList.toggle('fa-pause', _isRunning);
     };
   })();
 
