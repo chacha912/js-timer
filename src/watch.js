@@ -138,6 +138,7 @@ document.querySelector('.stopwatch').onclick = (() => {
   return ({ target }) => {
     const $targetBtn = closest(target, 'control-btn', 'stopwatch');
     if (!$targetBtn) return;
+    if ($targetBtn.disabled) return;
     if ($targetBtn === $btnLap) lapTimer();
     if ($targetBtn === $btnReset) resetTimer();
     if ($targetBtn === $btnStartOrStop) {
